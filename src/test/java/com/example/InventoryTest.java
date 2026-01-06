@@ -32,7 +32,8 @@ public class InventoryTest {
 
     @AfterEach
     void tearDown() {
-        if (driver != null) driver.quit();
+        if (driver != null)
+            driver.quit();
     }
 
     @Test
@@ -45,4 +46,26 @@ public class InventoryTest {
         List<WebElement> items = driver.findElements(By.cssSelector(".inventory_item"));
         assertTrue(items.size() > 0);
     }
+
+    @Test
+    void add_to_cart_should_show_badge_1() {
+        driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+
+        WebElement badge = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".shopping_cart_badge")));
+        assertEquals("1", badge.getText());
+    }
+
+    @Test
+    void remove_from_cart_should_remove_badge() {
+        driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".shopping_cart_badge")));
+
+        driver.findElement(By.id("remove-sauce-labs-backpack")).click();
+
+        // Assert badge biến mất
+        List<WebElement> badges = driver.findElements(By.cssSelector(".shopping_cart_badge"));
+        assertEquals(0, badges.size());
+    }
+
 }
